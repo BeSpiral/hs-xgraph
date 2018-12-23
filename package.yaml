@@ -1,0 +1,50 @@
+name:                graph
+version:             0.1.0.0
+github:              "jxxcarlson/hs-xgraph"
+license:             BSD3
+author:              "James Carlson"
+maintainer:          "jxxcarlson@gmail.com"
+copyright:           "2018"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Graphs
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/jxxcarlson/graph#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+- fgl
+- time
+
+library:
+  source-dirs: src
+
+executables:
+  graph-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - graph
+
+tests:
+  graph-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - graph
