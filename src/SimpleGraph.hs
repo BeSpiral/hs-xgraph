@@ -1,13 +1,16 @@
 module SimpleGraph
   ( makeGraph, makeNode, makeEdge
-  , outLabels
-  , xNodeList, xEdgeList, xg) where
+  , NodeLabel(NodeLabel), EdgeLabel(EdgeLabel)
+  , outFlow, inFlow
+  , xNodeList, xEdgeList, xg
+  ) where
 
-import Data.Graph.Inductive.Graph (Node, LNode, LEdge, mkGraph, lsuc)
+import Data.Graph.Inductive.Graph (Node, LNode, LEdge, mkGraph, lsuc, lpre)
 import Data.Graph.Inductive.PatriciaTree (Gr)
 
 data NodeLabel = NodeLabel {name :: String} deriving(Show)
 data EdgeLabel = EdgeLabel {edgeFlow :: Float} deriving(Show)
+
 
 -- Graph constructor functions
 
@@ -24,10 +27,23 @@ makeEdge from to flow =
   (from, to, EdgeLabel flow)
 
 
-outLabels :: Gr NodeLabel EdgeLabel -> Node -> [(Node, EdgeLabel)]
-outLabels g k =
-   lsuc g k
+outEdges :: Gr NodeLabel EdgeLabel -> Node -> [(Node, EdgeLabel)]
+outEdges g k =
+   (lsuc g k)
 
+{-\ outFlow xg 2 == 3.0 -}
+outFlow :: Gr NodeLabel EdgeLabel -> Node -> Float
+outFlow g k =
+  sum ((map (\(a,b) -> edgeFlow b) (outEdges g k)))
+
+inEdges :: Gr NodeLabel EdgeLabel -> Node -> [(Node, EdgeLabel)]
+inEdges g k =
+   (lpre g k)
+
+{-\ inFlow xg 2 == 1.0 -}
+inFlow :: Gr NodeLabel EdgeLabel -> Node -> Float
+inFlow g k =
+  sum ((map (\(a,b) -> edgeFlow b) (inEdges g k)))
 
 -- TEST DATA
 
