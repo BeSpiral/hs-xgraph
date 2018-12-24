@@ -1,10 +1,10 @@
-module CSV(nnEdgeListFromString,  nodeNamesFromNNEdgeList, xinput
-, makeIndexMap, makeIndex, makeNodeListFromIndex, makeGraphFromCSV ) where
+module CSV(makeGraphFromCSV, xinput) where
 
 -- sttp://web.engr.oregonstate.edu/~erwig/fgl/haskell/
 
 import Text.ParserCombinators.Parsec
 import qualified Data.Map.Strict as Map
+import Data.Maybe(catMaybes)
 import SimpleGraph(SGNode, SGEdge, SimpleGraph, makeNode, makeEdge, makeGraph)
 
 foo :: Int
@@ -16,11 +16,30 @@ makeGraphFromCSV :: String -> SimpleGraph
 makeGraphFromCSV input =
   let
     edgeList = nnEdgeListFromString input
+    dict = (makeIndexMap . nodeNamesFromNNEdgeList) edgeList
     nodes = (makeNodeListFromIndex . makeIndex . nodeNamesFromNNEdgeList) edgeList
+    edges = sgEdges dict edgeList
   in
-    makeGraph nodes []
+    makeGraph nodes edges
 
+sgEdges :: Map.Map String Int -> [NNEdge] -> [SGEdge]
+sgEdges dict nnEdgeList =
+  catMaybes (map (sgEdgeFromNNEdge dict) nnEdgeList)
 
+sgEdgeFromNNEdge :: Map.Map String Int -> NNEdge -> Maybe SGEdge
+sgEdgeFromNNEdge dict nnEdge =
+  let
+    iFrom = Map.lookup (from nnEdge) dict
+    iTo = Map.lookup (to nnEdge) dict
+  in
+    case (iFrom, iTo) of
+      (Just i, Just j) ->  Just (makeEdge i j (flow nnEdge))
+      (_, _) -> Nothing
+
+{-|
+el = nnEdgeListFromString xinput
+dd = (makeIndexMap . nodeNamesFromNNEdgeList) el
+-}
 makeIndexMap :: [String] -> Map.Map String Int
 makeIndexMap list =
   Map.fromList (zip list [1..(length list)])
