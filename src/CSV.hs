@@ -1,27 +1,51 @@
-module CSV(nnEdgeListFromString,  nodeListFromNNEdgeList, xinput , makeIndexMap ) where
+module CSV(nnEdgeListFromString,  nodeNamesFromNNEdgeList, xinput
+, makeIndexMap, makeIndex, makeNodeListFromIndex, makeGraphFromCSV ) where
 
 -- sttp://web.engr.oregonstate.edu/~erwig/fgl/haskell/
 
 import Text.ParserCombinators.Parsec
 import qualified Data.Map.Strict as Map
-import SimpleGraph(SGNode, SGEdge, SimpleGraph)
+import SimpleGraph(SGNode, SGEdge, SimpleGraph, makeNode, makeEdge, makeGraph)
 
 foo :: Int
 foo = 27
 
 data NNEdge = NNEdge { from :: String, to:: String, flow:: Float} deriving(Show )
 
+makeGraphFromCSV :: String -> SimpleGraph
+makeGraphFromCSV input =
+  let
+    edgeList = nnEdgeListFromString input
+    nodes = (makeNodeListFromIndex . makeIndex . nodeNamesFromNNEdgeList) edgeList
+  in
+    makeGraph nodes []
+
 
 makeIndexMap :: [String] -> Map.Map String Int
 makeIndexMap list =
   Map.fromList (zip list [1..(length list)])
 
+{-|
+  *ghci > ii = makeIndex ["d","b","c","a"]
+  *ghci > makeNodeListFromIndex ii
+  [(1,NodeLabel {name = "d"}),(2,NodeLabel {name = "b"}),(3,NodeLabel {name = "c"}),(4,NodeLabel {name = "a"})]
+-}
+makeNodeListFromIndex :: [(String, Int)] -> [SGNode]
+makeNodeListFromIndex index =
+  map (\(n, i) -> makeNode i n) index
+{-|
+  *ghci > makeIndex ["d","b","c","a"]
+  [("d",1),("b",2),("c",3),("a",4)]
+-}
+makeIndex :: [String] -> [(String, Int)]
+makeIndex list =
+  zip list [1..(length list)]
+
 
 {-|
 *ghci > xinput =  "a,b,1.2\nc,d,4.6\nc,e,8,9\n"
-*ghci > nnEdgeListFromString xinput
-*ghci > nodeListFromNNEdgeList el
-["d","b","c","a"]
+*ghci > el = nnEdgeListFromString xinput
+
 -}
 nnEdgeListFromString :: String -> [NNEdge]
 nnEdgeListFromString input =
@@ -31,12 +55,13 @@ nnEdgeListFromString input =
 
 
 {-|
-*ghci > xinput =  "a,b,1.2\nc,d,4.6\nc,e,8,9\n"
-*ghci > el nnEdgeListFromString xinput
-
+  *ghci > xinput =  "a,b,1.2\nc,d,4.6\nc,e,8,9\n"
+  *ghci > el = nnEdgeListFromString xinput
+  *ghci > nodeNamesFromNNEdgeList el
+  ["d","b","c","a"]
 -}
-nodeListFromNNEdgeList :: [NNEdge] -> [String]
-nodeListFromNNEdgeList nnEdgeList =
+nodeNamesFromNNEdgeList :: [NNEdge] -> [String]
+nodeNamesFromNNEdgeList nnEdgeList =
   unique ((map from nnEdgeList) ++ (map to nnEdgeList))
 
 unique :: Eq a => [a] -> [a]
