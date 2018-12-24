@@ -1,8 +1,9 @@
-module CSV(nnEdgeListFromString, xinput) where
+module CSV(nnEdgeListFromString,  nodeListFromNNEdgeList, xinput, unique) where
 
 -- sttp://web.engr.oregonstate.edu/~erwig/fgl/haskell/
 
 import Text.ParserCombinators.Parsec
+import SimpleGraph(SGNode, SGEdge, SimpleGraph)
 
 foo :: Int
 foo = 27
@@ -10,10 +11,13 @@ foo = 27
 data NNEdge = NNEdge { from :: String, to:: String, flow:: Float} deriving(Show )
 
 
+
+
 {-|
-*ghci > xinput =  "a,b,1.2\nc,d,4.6\n"
+*ghci > xinput =  "a,b,1.2\nc,d,4.6\nc,e,8,9\n"
 *ghci > nnEdgeListFromString xinput
-[NNEdge {from = "a", to = "b", flow = 1.2},NNEdge {from = "c", to = "d", flow = 4.6}]
+*ghci > nodeListFromNNEdgeList el
+["d","b","c","a"]
 -}
 nnEdgeListFromString :: String -> [NNEdge]
 nnEdgeListFromString input =
@@ -21,6 +25,18 @@ nnEdgeListFromString input =
     Left _ -> []
     Right list -> map nnEdgeFromList list
 
+
+{-|
+*ghci > xinput =  "a,b,1.2\nc,d,4.6\nc,e,8,9\n"
+*ghci > el nnEdgeListFromString xinput
+
+-}
+nodeListFromNNEdgeList :: [NNEdge] -> [String]
+nodeListFromNNEdgeList nnEdgeList =
+  unique ((map from nnEdgeList) ++ (map to nnEdgeList))
+
+unique :: Eq a => [a] -> [a]
+unique = foldl (\acc x -> if (elem x acc) then acc else x:acc) []
 
 {-|
 *ghci > nnEdgeFromList ["a", "b", "1.22"]
