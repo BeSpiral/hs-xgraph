@@ -1,5 +1,5 @@
 module SimpleGraph
-  ( makeGraph, makeNode, makeEdge
+  ( SimpleGraph, SGNode, SGEdge, makeGraph, makeNode, makeEdge
   , NodeLabel(NodeLabel), EdgeLabel(EdgeLabel)
   , outFlow, inFlow, totalFlow
   , xNodeList, xEdgeList, xg, labEdges
@@ -10,19 +10,23 @@ import Data.Graph.Inductive.PatriciaTree (Gr)
 
 data NodeLabel = NodeLabel {name :: String} deriving(Show)
 data EdgeLabel = EdgeLabel {edgeFlow :: Float} deriving(Show)
+type SGNode = LNode NodeLabel
+type SGEdge = LEdge EdgeLabel
 
+
+type SimpleGraph = Gr NodeLabel EdgeLabel
 
 -- Graph constructor functions
 
-makeGraph :: [LNode NodeLabel] -> [LEdge EdgeLabel] -> Gr NodeLabel EdgeLabel
+makeGraph :: [SGNode] -> [SGEdge] -> SimpleGraph
 makeGraph nodeList edgeList =
   mkGraph nodeList edgeList
 
-makeNode :: Int -> String -> LNode NodeLabel
+makeNode :: Int -> String -> SGNode
 makeNode k name =
   (k, NodeLabel name)
 
-makeEdge :: Int -> Int -> Float -> LEdge EdgeLabel
+makeEdge :: Int -> Int -> Float -> SGEdge
 makeEdge from to flow =
   (from, to, EdgeLabel flow)
 
@@ -30,27 +34,30 @@ makeEdge from to flow =
 -- FLOWS
 --
 --
-totalFlow :: Gr NodeLabel EdgeLabel -> Float
+totalFlow :: SimpleGraph -> Float
 totalFlow g =
   sum (map (edgeFlow . edgeLabel) (labEdges g))
 
-outEdges :: Gr NodeLabel EdgeLabel -> Node -> [(Node, EdgeLabel)]
-outEdges g k =
-   (lsuc g k)
-
 {-\ outFlow xg 2 == 3.0 -}
-outFlow :: Gr NodeLabel EdgeLabel -> Node -> Float
+outFlow :: SimpleGraph -> Node -> Float
 outFlow g k =
   sum ((map (\(a,b) -> edgeFlow b) (outEdges g k)))
 
-inEdges :: Gr NodeLabel EdgeLabel -> Node -> [(Node, EdgeLabel)]
+{-\ inFlow xg 2 == 1.0 -}
+inFlow :: SimpleGraph -> Node -> Float
+inFlow g k =
+  sum ((map (\(a,b) -> edgeFlow b) (inEdges g k)))
+
+
+outEdges :: SimpleGraph -> Node -> [(Node, EdgeLabel)]
+outEdges g k =
+   (lsuc g k)
+
+
+inEdges :: SimpleGraph -> Node -> [(Node, EdgeLabel)]
 inEdges g k =
    (lpre g k)
 
-{-\ inFlow xg 2 == 1.0 -}
-inFlow :: Gr NodeLabel EdgeLabel -> Node -> Float
-inFlow g k =
-  sum ((map (\(a,b) -> edgeFlow b) (inEdges g k)))
 
 -- TEST DATA
 
