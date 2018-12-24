@@ -1,13 +1,37 @@
-module CSV(makeGraphFromCSV, xinput) where
+module CSV(makeGraphFromCSV, makeCSVFromGraph, xinput, foo, nnEdgeFromSGEdge) where
 
 -- sttp://web.engr.oregonstate.edu/~erwig/fgl/haskell/
 
 import Text.ParserCombinators.Parsec
 import qualified Data.Map.Strict as Map
 import Data.Maybe(catMaybes)
-import SimpleGraph(SGNode, SGEdge, SimpleGraph, makeNode, makeEdge, makeGraph)
+import Data.Graph.Inductive.Graph (labEdges)
+import SimpleGraph(SGNode, SGEdge, SimpleGraph
+  , makeNode, makeEdge, makeGraph
+  , sourceNode, targetNode, flowOnEdge)
 
 data NNEdge = NNEdge { from :: String, to:: String, flow:: Float} deriving(Show )
+
+
+makeCSVFromGraph :: SimpleGraph -> String
+makeCSVFromGraph graph =
+  ""
+
+nnEdgeFromSGEdge :: Map.Map  Int String -> SGEdge -> Maybe NNEdge
+nnEdgeFromSGEdge dict sgEdge =
+  let
+    maybeSourceLabel = Map.lookup (sourceNode sgEdge) dict
+    maybeTargetLabel = Map.lookup (targetNode sgEdge) dict
+  in
+    case (maybeSourceLabel,  maybeTargetLabel) of
+      (Just sourceLabel, Just targetLabel) ->  Just (NNEdge sourceLabel targetLabel (flowOnEdge sgEdge))
+      (_, _) -> Nothing
+
+
+foo graph =
+  labEdges graph
+-- indexMapFromNodeList :: [SGNode] -> Map String Int
+-- indexMapFromNodeList
 
 makeGraphFromCSV :: String -> SimpleGraph
 makeGraphFromCSV input =
