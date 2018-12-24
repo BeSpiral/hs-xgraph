@@ -7,9 +7,6 @@ import qualified Data.Map.Strict as Map
 import Data.Maybe(catMaybes)
 import SimpleGraph(SGNode, SGEdge, SimpleGraph, makeNode, makeEdge, makeGraph)
 
-foo :: Int
-foo = 27
-
 data NNEdge = NNEdge { from :: String, to:: String, flow:: Float} deriving(Show )
 
 makeGraphFromCSV :: String -> SimpleGraph
