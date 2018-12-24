@@ -1,8 +1,9 @@
-module CSV(nnEdgeListFromString,  nodeListFromNNEdgeList, xinput, unique) where
+module CSV(nnEdgeListFromString,  nodeListFromNNEdgeList, xinput , makeIndexList ) where
 
 -- sttp://web.engr.oregonstate.edu/~erwig/fgl/haskell/
 
 import Text.ParserCombinators.Parsec
+-- import qualified Data.Map as Map
 import SimpleGraph(SGNode, SGEdge, SimpleGraph)
 
 foo :: Int
@@ -11,6 +12,9 @@ foo = 27
 data NNEdge = NNEdge { from :: String, to:: String, flow:: Float} deriving(Show )
 
 
+makeIndexList :: [String] -> [(String, Int)]
+makeIndexList list =
+  zip list [1..(length list)]
 
 
 {-|
