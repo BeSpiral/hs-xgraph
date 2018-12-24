@@ -1,28 +1,33 @@
 module SimpleGraph
-  (makeGraph, makeNode, makeEdge, xNodeList, xEdgeList, xg) where
+  ( makeGraph, makeNode, makeEdge
+  , xNodeList, xEdgeList, xg) where
 
-import Data.Graph.Inductive.Graph as Graph
+import Data.Graph.Inductive.Graph (LNode, LEdge, mkGraph)
 import Data.Graph.Inductive.PatriciaTree (Gr)
-
-
 
 data NodeLabel = NodeLabel {name :: String} deriving(Show)
 data EdgeLabel = EdgeLabel {edgeFlow :: Float} deriving(Show)
 
+-- Graph constructor functions
 
-makeGraph :: [Graph.LNode NodeLabel] -> [Graph.LEdge EdgeLabel] -> Gr NodeLabel EdgeLabel
+makeGraph :: [LNode NodeLabel] -> [LEdge EdgeLabel] -> Gr NodeLabel EdgeLabel
 makeGraph nodeList edgeList =
-  Graph.mkGraph nodeList edgeList
+  mkGraph nodeList edgeList
 
-makeNode :: Int -> String -> Graph.LNode NodeLabel
+makeNode :: Int -> String -> LNode NodeLabel
 makeNode k name =
   (k, NodeLabel name)
 
-makeEdge :: Int -> Int -> Float -> Graph.LEdge EdgeLabel
+makeEdge :: Int -> Int -> Float -> LEdge EdgeLabel
 makeEdge from to flow =
   (from, to, EdgeLabel flow)
 
+
+-- TEST DATA
+
 xg = makeGraph xNodeList xEdgeList
+xNodeList = [n0, n1, n2, n3, n4, n5]
+xEdgeList = [e0, e1, e2, e3, e4]
 
 n0 = makeNode 0 "o"
 n1 = makeNode 1 "a"
@@ -31,15 +36,12 @@ n3 = makeNode 3 "c"
 n4 = makeNode 4 "d"
 n5 = makeNode 5 "e"
 
-xNodeList = [n0, n1, n2, n3, n4, n5]
-
 e0 = makeEdge 0 1 1.0
 e1 = makeEdge 1 2 1.0
 e2 = makeEdge 2 3 1.0
 e3 = makeEdge 2 4 1.0
 e4 = makeEdge 2 5 1.0
 
-xEdgeList = [e0, e1, e2, e3, e4]
 
 --
 -- data SimpleEdge = SimpleEdge
