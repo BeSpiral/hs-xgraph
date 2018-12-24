@@ -1,11 +1,13 @@
 module SimpleGraph
   ( SimpleGraph, SGNode, SGEdge, makeGraph, makeNode, makeEdge
   , NodeLabel(NodeLabel), EdgeLabel(EdgeLabel)
-  , outFlow, inFlow, totalFlow
+  , sourceNode, targetNode
+  , outFlow, inFlow, totalFlow, flowOnEdge
   , xNodeList, xEdgeList, xg, labEdges
   ) where
 
-import Data.Graph.Inductive.Graph (Node, LNode, LEdge, mkGraph, lsuc, lpre, labEdges, edgeLabel)
+import Data.Graph.Inductive.Graph (Node, LNode, LEdge, mkGraph, lsuc, lpre
+   , toEdge, labEdges, edgeLabel)
 import Data.Graph.Inductive.PatriciaTree (Gr)
 
 data NodeLabel = NodeLabel {name :: String} deriving(Show)
@@ -31,6 +33,17 @@ makeEdge from to flow =
   (from, to, EdgeLabel flow)
 
 --
+-- EDGES
+--
+
+sourceNode :: SGEdge -> Node
+sourceNode  sge =
+  (fst . toEdge) sge
+
+targetNode :: SGEdge -> Node
+targetNode  sge =
+  (snd . toEdge) sge
+--
 -- FLOWS
 --
 --
@@ -47,6 +60,11 @@ outFlow g k =
 inFlow :: SimpleGraph -> Node -> Float
 inFlow g k =
   sum ((map (\(a,b) -> edgeFlow b) (inEdges g k)))
+
+flowOnEdge :: SGEdge -> Float
+flowOnEdge edge =
+  (edgeFlow . edgeLabel) edge
+
 
 
 outEdges :: SimpleGraph -> Node -> [(Node, EdgeLabel)]
