@@ -24,6 +24,7 @@ dependencies:
 - fgl
 - time
 - parsec
+- containers
 
 library:
   source-dirs: src
