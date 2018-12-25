@@ -3,7 +3,7 @@ module SimpleGraph
   , NodeLabel(NodeLabel), EdgeLabel(EdgeLabel)
   , sourceNode, targetNode, nodeData, nodeMap
   , outFlow, inFlow, totalFlow, flowOnEdge
-  , xNodeList, xEdgeList, xg, labEdges
+  , xg, labEdges
   ) where
 
 import Data.Graph.Inductive.Graph (Node, LNode, LEdge, mkGraph, lsuc, lpre
@@ -103,22 +103,3 @@ e1 = makeEdge 1 2 1.0
 e2 = makeEdge 2 3 1.0
 e3 = makeEdge 2 4 1.0
 e4 = makeEdge 2 5 1.0
-
-
---
--- data SimpleEdge = SimpleEdge
---   { fromLabel :: String
---   , toLabel :: String
---   , flow :: Float } deriving (Show)
-
--- data SimpleNode = LNode NodeLabel
-
--- data SimpleEdgeList = List SimpleEdge
-
--- e0 = SimpleEdge "o" "a" 1.0
--- e1 = SimpleEdge "a" "b" 1.0
--- e2 = SimpleEdge "b" "c" 1.0
--- e3 = SimpleEdge "b" "d" 1.0
--- e4 = SimpleEdge "b" "e" 1.0
---
--- xel = [e0, e1, e2, e3, e4]

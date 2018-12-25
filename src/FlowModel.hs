@@ -75,4 +75,4 @@ resilienceOfEdge totalFlow_ graph edge =
       numerator = ef * ef
       logRatio = log2 (numerator/denominator)
     in
-      ef * logRatio
+      - ef * logRatio
