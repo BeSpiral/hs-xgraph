@@ -1,4 +1,4 @@
-module CSV(makeGraphFromCSV, makeCSVFromGraph, xinput, foo, nnEdgeFromSGEdge) where
+module CSV(graphFromCSV, csvFromGraph, xinput) where
 
 -- sttp://web.engr.oregonstate.edu/~erwig/fgl/haskell/
 
@@ -6,16 +6,25 @@ import Text.ParserCombinators.Parsec
 import qualified Data.Map.Strict as Map
 import Data.Maybe(catMaybes)
 import Data.Graph.Inductive.Graph (labEdges)
+import Data.List (intercalate)
 import SimpleGraph(SGNode, SGEdge, SimpleGraph
-  , makeNode, makeEdge, makeGraph
+  , makeNode, makeEdge, makeGraph, nodeMap
   , sourceNode, targetNode, flowOnEdge)
 
 data NNEdge = NNEdge { from :: String, to:: String, flow:: Float} deriving(Show )
 
 
-makeCSVFromGraph :: SimpleGraph -> String
-makeCSVFromGraph graph =
-  ""
+csvFromGraph :: SimpleGraph -> String
+csvFromGraph graph =
+  let
+    dict = nodeMap graph
+    nnEdges = catMaybes (map (nnEdgeFromSGEdge dict) (labEdges graph))
+  in
+    intercalate "" (map stringOfNNEdge (reverse nnEdges))
+
+stringOfNNEdge :: NNEdge -> String
+stringOfNNEdge nnEdge =
+  (from nnEdge) ++ "," ++ (to nnEdge) ++ "," ++ (show (flow nnEdge)) ++ "\n"
 
 nnEdgeFromSGEdge :: Map.Map  Int String -> SGEdge -> Maybe NNEdge
 nnEdgeFromSGEdge dict sgEdge =
@@ -33,8 +42,8 @@ foo graph =
 -- indexMapFromNodeList :: [SGNode] -> Map String Int
 -- indexMapFromNodeList
 
-makeGraphFromCSV :: String -> SimpleGraph
-makeGraphFromCSV input =
+graphFromCSV :: String -> SimpleGraph
+graphFromCSV input =
   let
     edgeList = nnEdgeListFromString input
     dict = (makeIndexMap . nodeNamesFromNNEdgeList) edgeList
