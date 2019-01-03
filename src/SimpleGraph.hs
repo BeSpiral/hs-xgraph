@@ -6,6 +6,9 @@ module SimpleGraph
   , xg, labEdges
   ) where
 
+{-| SimpleGraph implements a special case of Data.Graph.Inductive.Graph.
+    The nodes are labeled by Strings and the edges by Floats.  -}
+
 import Data.Graph.Inductive.Graph (Node, LNode, LEdge, mkGraph, lsuc, lpre
    , toEdge, labNodes, labEdges, edgeLabel)
 import Data.Graph.Inductive.PatriciaTree (Gr)

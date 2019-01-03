@@ -2,6 +2,8 @@ module FlowModel(
     sustainability, efficiency, resilience, alpha
   ) where
 
+{-| Calculate effiicieny of flows in a SimpleGraph  -}
+
 import SimpleGraph(
        SimpleGraph,SGEdge
       , sourceNode, targetNode

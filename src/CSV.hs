@@ -1,6 +1,7 @@
 module CSV(graphFromCSV, csvFromGraph, xinput) where
 
 -- sttp://web.engr.oregonstate.edu/~erwig/fgl/haskell/
+{-| Build a SimpleGraph from a CSV file, export a SimpleGraph to a CSV file -}
 
 import Text.ParserCombinators.Parsec
 import qualified Data.Map.Strict as Map
@@ -10,6 +11,7 @@ import Data.List (intercalate)
 import SimpleGraph(SGNode, SGEdge, SimpleGraph
   , makeNode, makeEdge, makeGraph, nodeMap
   , sourceNode, targetNode, flowOnEdge)
+
 
 data NNEdge = NNEdge { from :: String, to:: String, flow:: Float} deriving(Show )
 

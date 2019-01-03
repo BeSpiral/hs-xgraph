@@ -26,6 +26,7 @@ The module `Test.hs` defines two sets of test data, the strings `ex1` and `ex2`.
 ```
 The results agree with those obtained using the Elm implementatin of this library at `sustainability_index_core`.
 
+
 ## References
 
 [Monday Morning Haskell: Graphing it out](https://mmhaskell.com/blog/2017/6/21/graphing-it-out)
